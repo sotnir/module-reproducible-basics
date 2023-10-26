@@ -41,10 +41,11 @@ keypoints:
 {: .challenge}
 
 
-- For Windows OS users: If you do not have a remote or virtual
-  environment with Unix or Linux system, you can
-  [enable a "native" Linux shell on your Windows 10 system](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-
+> ## For Windows OS users
+>  If you do not have a remote or virtual
+>  environment with Unix or Linux system, you can
+>  [enable a "native" Linux shell on your Windows 10 system](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+{: .callout}
 
 ## What is a “shell”?
 
@@ -89,12 +90,7 @@ failed interim execution.
 > If you are interested in knowing more about the history and features of
 > various shells, please review the materials under following external links:
 >
->  - ["Teaching Notes" of the above "The Unix Shell" lesson](https://swcarpentry.github.io/shell-novice/guide/) --
->    provides a number of hints and links to interesting related resources
 >  - [Wikipedia:Unix shell](https://en.wikipedia.org/wiki/Unix_shell)
->
-> Relevant books:
->
 >  - [Data Science at the Command Line](http://datascienceatthecommandline.com) --
 >   contains a list of command line tools useful for “data science”
 {: .callout}
@@ -208,20 +204,20 @@ command is run. This is why any tool which aims to capture the
 state of the computational environment for later re-execution
 needs to store the value of the PATH variable to guarantee that
 given the same set of files, the same commands are executed. For example,
-we may have two different versions of AFNI installed in different locations;
-without specifying the path to a particular installation of AFNI, we may
+we may have two different versions of FSL installed in different locations;
+without specifying the path to a particular installation of FSL, we may
 unintentionally run a different version than intended and end up with different results.
 
 > ## How can you determine the full path of a command?
 >
-> To see which program will actually be used when you run a
-> command, use the `which` command; e.g.:
+> The `which` command can show which program will actually be used you
+> run a command. For example:
 > ~~~
-> $ which afni
-> /usr/bin/afni
+> $ which fsl
+> /usr/local/fsl
 > ~~~
 > {: .bash}
-> Do not confuse this with the `locate` command, which (if available) would
+> **Note:** Do not confuse this with the `locate` command, which (if available) would
 > find a file containing the specified word somewhere in the file name/path.
 {: .solution}
 
@@ -252,12 +248,12 @@ unintentionally run a different version than intended and end up with different 
 {: .callout}
 
 
-> ## Exercise: add a new path where the shell will look for commands...
+> ## Exercise: add a new path where the shell will look for commands such that...
 >
-> 1. such that those commands take precedence over identically named commands
+> 1. those commands take precedence over identically named commands
 > available elsewhere on the `PATH`?
 >
-> 2. such that those commands are run only if not found elsewhere
+> 2. those commands are run only if not found elsewhere
 > on the `PATH`? (rarely needed/used case)
 >
 > > ## Solution
@@ -270,9 +266,9 @@ unintentionally run a different version than intended and end up with different 
 > ## Exercise: determine the environment variables used by a process
 >
 > Since each process inherits and possibly changes environment
-> variables so that its child processes inherit them in turn, it can
-> often be important to be able to inspect them.  Given a `PID` of
-> a currently running process (e.g., the `$$` variable in POSIX shell contains a
+> variables so that its child processes inherit them in turn,
+> it is often important to be able to inspect them.  
+> Given a `PID` of a currently running process (e.g., the `$$` variable in POSIX shell contains a
 > `PID` of your active shell), how can you determine its environment variables?
 >
 > > ## Solution
@@ -288,11 +284,22 @@ unintentionally run a different version than intended and end up with different 
 
 > ## Why is ${variable} is preferable over $variable?
 >
-> Use `${variable}` to safely concatenate a variable with another string.
+> Using `${variable}` avoids ambiguity by safely concatenating a variable with another string.  
 > For instance, if you had a variable `filename` that contains the value
 > `preciousfile`, `$filename_modified` would refer to the value of the
 > possibly undefined `filename_modified` variable; on the other hand, `${filename}_modified`
 > will produce the desired value of `preciousfile_modified`.
+> ~~~
+> % filename="previousfile"
+> % filename_modified="somerandomstring"
+> % echo $filename
+> previousfile
+> % echo $filename_modified
+> somerandomstring
+> % echo ${filename}_modified
+> previousfile_modified
+> ~~~
+> {: .bash}
 {: .solution}
 
 
@@ -304,13 +311,14 @@ shared libraries. The particular list of dynamic libraries that an
 executable needs is often stored without full paths as well. Thus,
 `ld.so` (e.g., `/lib/ld-linux.so.2` on recent Debian systems), which
 takes care of executing those binaries, needs to determine which
-particular libraries to load. The same way the `PATH` variable resolves
-paths for the execution of commands, the `LD_LIBRARY_PATH`
-environment variable resolves paths for loading dynamic
-libraries. Unlike `PATH`, however, `ld.so` does assume a list of
+particular libraries to load. 
+
+The `LD_LIBRARY_PATH` environment variable resolves paths for loading dynamic
+libraries in the same way the `PATH` variable resolves
+paths for the execution of commands. Unlike `PATH`, however, `ld.so` does assume a list of
 default paths (e.g., `/lib`, then `/usr/lib` on Linux systems, as
-defined in `/etc/ld.so.conf` file(s)). Consequently, you may not have
-even explicitly set it in your environment!
+defined in `/etc/ld.so.conf` file(s)). Consequently, you may not even have
+explicitly set it in your environment!
 
 > ## How can you discover which library is used?
 >
@@ -395,21 +403,29 @@ modules.
 > >    declare -- LOCAL_VARIABLE="just for now"
 > >    ~~~
 > >    {: .bash}
-> > 2. Extrapolate from 1.: `declare -p | grep -e '^declare --'`
+> > 2. Extrapolate from 1.: 
+> >    ~~~
+> >    declare -p | grep -e '^declare --'
+> >    ~~~
+> >    {: .bash}
 > {: .solution}
 {: .challenge}
 
 
 ## Efficient use of the interactive shell
 
-A shell can be used quite efficiently once you become familiar with its
-features and configure it to simplify common operations.
+A shell can simplify common operations and effectively boost your efficiency 
+once becoming familiar with its features and configuring properly.
 
-### aliases
+### What are "aliases"?
 
 Aliases are shortcuts for commonly used commands and can add
-options to calls for most common commands.  Please review useful aliases presented in
-[30 Handy Bash Shell Aliases For Linux / Unix / Mac OS X](https://www.cyberciti.biz/tips/bash-aliases-mac-centos-linux-unix.html).
+options to calls for most common commands.  
+
+> ## Additional materials
+> Please review useful aliases presented in
+> [30 Handy Bash Shell Aliases For Linux / Unix / Mac OS X](https://www.cyberciti.biz/tips/bash-aliases-mac-centos-linux-unix.html).
+{: .callout}
 
 > ## Should aliases defined in your `~/.bashrc` be used in your scripts?
 >
@@ -447,20 +463,21 @@ to edit the command line text:
 `Alt-b`  | Move cursor backward one word on the current line
 `Tab`    | Auto-complete files, folders, and command names
 
-Hints:
-
-- If the `Alt-` combination does not work, you can temporarily work around that
-  by hitting the `Esc` key once, instead of holding `Alt` before pressing the
-  following command character.
-- Although many navigational commands can be achieved also by using
-  "arrow keys" on your keyboard, sometimes using their `Ctrl-`
-  counterparts is more efficient since it doesn't require you to move
-  away your hands from the main alphanumeric portion of the keyboard.
-- Many people find the need to use `Ctrl` key more often than
-  `CapsLock` (which was originally used to assist with FORTRAN and other languages
-  where all keywords had to be CAPITALIZED). You can
-  [change your environment settings](https://www.emacswiki.org/emacs/MovingTheCtrlKey)
-  to either swap them or to make `CapsLock` into another `Ctrl` key.
+> ## Hints
+> 
+> - If the `Alt-` combination does not work, you can temporarily work around that
+>   by hitting the `Esc` key once, instead of holding `Alt` before pressing the
+>   following command character.
+> - Although many navigational commands can be achieved also by using
+>   "arrow keys" on your keyboard, sometimes using their `Ctrl-`
+>   counterparts is more efficient since it doesn't require you to move
+>   away your hands from the main alphanumeric portion of the keyboard.
+> - Many people find the need to use `Ctrl` key more often than
+>   `CapsLock` (which was originally used to assist with FORTRAN and other languages
+>   where all keywords had to be CAPITALIZED). You can
+>   [change your environment settings](https://www.emacswiki.org/emacs/MovingTheCtrlKey)
+>   to either swap them or to make `CapsLock` into another `Ctrl` key.
+{: .callout}
 
 If you need a more powerful way to edit your current command line, use
 
@@ -533,7 +550,7 @@ command line navigation command (e.g., `Ctrl-e`).
 Subsequent use of `Alt-.` will bring up the last argument of the previous command,
 and so on.
 
-> ## History navigation exercise
+> ## Exercise: History navigation
 >
 > Inspect your shell command history you have run so far:
 > 1. Use `history` and `uniq` commands to figure out what which command you run the most
@@ -641,9 +658,9 @@ condition is not satisfied. For undefined variables, use `test -v`:
 See the “CONDITIONAL EXPRESSIONS" section of the `man bash` page for more
 conditions, such as:
 
--a file   | True if file exists
--w file   | True if file exists and is writable
--z string | True if the length of string is non-zero
+`-a file`   | True if file exists
+`-w file`   | True if file exists and is writable
+`-z string` | True if the length of string is non-zero
 
 Instead of calling the `test` command, you can use
 `[ TEST-EXPRESSION ]` syntax, so `test -v undefined` is identical to
@@ -654,22 +671,23 @@ somewhat tested -- the script will fail as soon as any command fails.
 Using such tests/assertions in your code can help guarantee that
 your script performs as expected.
 
-> Exercise: TODO, under construction.
+> ## Exercise: TODO, under construction.
+{: .challenge}
 
 ### Unit-testing
 
 [Unit-testing](https://en.wikipedia.org/wiki/Unit_testing) is a
 powerful paradigm to verify that pieces of your code (units) operate
 correctly in various scenarios, and that these assumptions are represented in
-the code. An interesting observation is that everyone does at least some
+the code. In fact,  everyone does at least some
 "testing" by simply running their code/script on an input and checking
 that the output matches their expectations. Unit-testing just takes this
 workflow one step further: code such tests in a separate file so you can run
 them all at once later on (e.g., whenever you change your script) to verify
 that your script still performs correctly. In the simplest case, you can
 just copy your test commands into a separate script that would fail if
-any command within it fails (therefore effectively testing your target
-script(s)).
+any command within it fails, and therefore effectively testing your target
+script(s).
 
 For example, the following script could be used to test basic correct operations
 of AFNI's `1dsum` command:
