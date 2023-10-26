@@ -9,7 +9,7 @@ kind: "lesson"
 title: "ReproNim Reproducible Basics Module"
 
 # Repository URL (without trailing slash).
-repo: https://github.com/ReproNim/module-reproducible-basics
+repo: https://github.com/sotnir/module-reproducible-basics
 
 # Root URL below username.github.io domain, with leading slash but no trailing slash.
 # For example, for 'https://neurohackweek.github.io/lesson-example', use '/lesson-example'.
